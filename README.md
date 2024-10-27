@@ -26,8 +26,43 @@
    ```
    python inspect_meme_main.py
    ```
+5. 配置supervisor：
+   - 在`/etc/supervisor/conf.d/`目录下创建一个文件，例如`telegram-bot.conf`，并添加以下内容：
+   ```
+   [program:telegram-bot]
+   command=/root/telegram-bot/venv/bin/python /root/telegram-bot/inspect_meme_main.py
+   directory=/root/telegram-bot
+   user=root
+   autostart=true
+   autorestart=true
+   stderr_logfile=/root/telegram-bot/telegram-bot.err.log
+   stdout_logfile=/root/telegram-bot/telegram-bot.out.log
+   ```
+   - 启动supervisor配置：
+   ```
+   supervisord -c /etc/supervisor/supervisord.conf
+   ```
+   - 重新加载supervisor配置：
+   ```
+   sudo supervisorctl reread
+   sudo supervisorctl update
+   ```
+   管理 supervisor 控制的程序：
+   - 停止程序：
+   ```
+   sudo supervisorctl stop telegram-bot
+   ```
+   - 启动程序：
+   ```
+   sudo supervisorctl start telegram-bot
+   ```
+   - 重启程序：
+   ```
+   sudo supervisorctl restart telegram-bot
+   ```
+   - 查看所有程序状态：
+   ```
+   sudo supervisorctl status
+   ```
 
 现在您的Telegram Bot应该已经在运行了。您可以在Telegram中与它进行交互。
-
-注意：确保在运行bot之前已经在Telegram中创建了bot并获取了token。
-

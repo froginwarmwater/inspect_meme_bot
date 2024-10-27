@@ -4,3 +4,4 @@ nohup.*
 output.*
 user_chat_ids.json
 .env
+*.log
