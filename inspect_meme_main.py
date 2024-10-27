@@ -7,8 +7,8 @@ import os
 import telegram
 from inspect_meme_get_filter import filter_new_or_updated_tokens, filter_last_10_tokens
 from dotenv import load_dotenv
+load_dotenv()
 TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-
 # 假设我们用一个文件来保存用户 chat_id
 USER_DATA_FILE = 'user_chat_ids.json'
 # 初始化Telegram Bot

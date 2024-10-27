@@ -19,7 +19,7 @@
    - 创建一个`.env`文件在项目根目录
    - 在`.env`文件中添加您的Telegram Bot Token：
      ```
-     BOT_TOKEN=your_bot_token_here
+     TELEGRAM_BOT_TOKEN=your_bot_token_here
      ```
 
 4. 运行Bot：
