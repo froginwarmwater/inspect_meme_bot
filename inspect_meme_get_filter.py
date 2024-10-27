@@ -25,6 +25,8 @@ def filter_last_10_tokens(all_json_data):
 
 
 def filter_new_or_updated_tokens(all_json_data):
+    if all_json_data is None:
+      return []
     temp_json_data = all_json_data
 
     """

@@ -148,11 +148,18 @@ def format_token_info_for_bot(tokens):
     # 遍历每个 token 并格式化其信息
     for token in tokens:
         name = token.get('name', 'Unknown')
-        chain = token.get('chain', 'Unknown')
-        address = token.get('contractAddress') or 'Not available'
+        chain = token.get('chain', 'Unknown').capitalize()
+        address = token.get('contractAddress', 'Not available')
 
-        # 使用多行格式化 token 的信息
-        formatted_info += f"Token Name: {name}\nChain: {chain.capitalize()}\nAddress: {address}\n\n"
+        # 创建 DexScreener 链接
+        dex_screener_link = f"https://dexscreener.com/{chain.lower()}/{address}" if address != 'Not available' else 'N/A'
+
+        # 使用HTML格式化 token 的信息，包括 DexScreener 链接
+        formatted_info += f"""
+<b>Token Name:</b> <code style="color: blue;">{name}</code>
+<b>Chain:</b> <code style="color: blue;">{chain}</code>
+<b>Address:</b> <a href="{dex_screener_link}">{address}</a>
+"""
 
     return formatted_info.strip()
 
@@ -163,16 +170,18 @@ address_set = set()
 async def check_for_new_data(context):
     global last_data
     global address_set
-    current_data = fetch_api_data()
-    if len(last_data) == 0:
-        for token in current_data:
-            address_set.add(token.get('contractAddress'))
-        return []
+    api_data = fetch_api_data()
+    current_data = filter_new_or_updated_tokens(api_data)
+    # 跳过首次提醒
+    # if len(last_data) == 0:
+    #     for token in current_data:
+    #         address_set.add(token.get('contractAddress'))
+    #     return []
 
     new_entries = []
     for token in current_data:
         contract_address = token.get('contractAddress')
-        if contract_address not in address_set:  # 如果地址不在 address_set 中，说明是新的 token
+        if contract_address not in address_set:  # 如果地址不在 address_set 中，说明是新 token
             new_entries.append(token)  # 将新的 token 添加到新条目列表中
             address_set.add(contract_address)  # 同时将其添加到 address_set，避免重复处理
 
@@ -183,7 +192,7 @@ async def check_for_new_data(context):
 # 将通知发送给所有用户
 async def send_notification_to_all_users(context, message):
     for chat_id in user_chat_ids:
-        await context.bot.send_message(chat_id=chat_id, text=message)
+        await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='HTML')
 
 
 def start_listener(job_queue: JobQueue):
